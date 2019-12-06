@@ -1,6 +1,6 @@
 import hashlib
 import requests
-
+import json
 import sys
 
 from uuid import uuid4
@@ -25,8 +25,12 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     proof = 0
     #  TODO: Your code here
+    block_string = json.dumps(block, sort_keys=True).encode()
+    proof = 0
+    while valid_proof(block_string, proof) is False:
+        proof += 1
 
-    print("Proof found: " + str(proof) + " in " + str(timer() - start))
+        print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
 
@@ -40,7 +44,10 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    pass
+    guess = f"{block_string}{proof}".encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    # return True or False
+    return guess_hash[:DIFFICULTY] == "0" * DIFFICULTY
 
 
 if __name__ == '__main__':
